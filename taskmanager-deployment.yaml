@@ -1,0 +1,50 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: taskmanager
+  name: taskmanager-deploy
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: taskmanager
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+     
+      labels:
+        app: taskmanager
+    spec:
+      containers:
+      - image: techiesantosh/taskmanager:latest
+        imagePullPolicy: Always
+        name: taskmanager
+        ports:
+        - containerPort: 8080
+        readinessProbe:
+          failureThreshold: 12
+          httpGet:
+            path: /actuator/health
+            port: 8080
+          initialDelaySeconds: 5
+          periodSeconds: 2
+        livenessProbe:
+          failureThreshold: 12
+          httpGet:
+            path: /actuator/liveness
+            port: 8080
+          initialDelaySeconds: 5
+          periodSeconds: 2              
+        resources: {}
+        volumeMounts:
+        - mountPath: /data/taskmanager
+          name: taskmanager-pv
+      restartPolicy: Always
+      serviceAccountName: ""
+      volumes:
+      - name: taskmanager-pv
+        persistentVolumeClaim:
+          claimName: taskmanager-pvc
+status: {}
