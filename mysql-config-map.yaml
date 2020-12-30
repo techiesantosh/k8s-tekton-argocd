@@ -6,3 +6,4 @@ data:
   # Configuration values can be set as key-value properties
   MYSQL_DATABASE: taskmanager
   MYSQL_USER: root
+  MYSQL_OTHER_USER: santosh

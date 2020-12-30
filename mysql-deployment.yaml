@@ -22,15 +22,15 @@ spec:
       - env:
         
         # Pull password from secrets
-        - name: MYSQL_PASSWORD
+        - name: MYSQL_ROOT_PASSWORD
           valueFrom:
             secretKeyRef:
               name: mysql-secret
-              key: MYSQL_PASSWORD
+              key: MYSQL_ROOT_PASSWORD
        # Load all ConfigMap keys/values into environment variable
         envFrom:
           - configMapRef:
-              name: msyql-config-map
+              name: mysql-config-map
         image: mysql:latest
         imagePullPolicy: ""
         name: mysql-docker-container
@@ -53,5 +53,5 @@ spec:
       # Define volume that will contain ConfigMap data    
       - name: mysql-config-vol
         configMap:
-          name: msyql-config-map
+          name: mysql-config-map
 status: {}
