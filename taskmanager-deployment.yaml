@@ -24,27 +24,43 @@ spec:
         ports:
         - containerPort: 8080
         readinessProbe:
-          failureThreshold: 12
           httpGet:
-            path: /actuator/health
+            path: /actuator/health/readiness
             port: 8080
-          initialDelaySeconds: 5
+          initialDelaySeconds: 40
           periodSeconds: 2
+          timeoutSeconds: 2
+          failureThreshold: 1  
         livenessProbe:
-          failureThreshold: 12
           httpGet:
-            path: /actuator/liveness
+            path: /actuator/health/liveness
             port: 8080
-          initialDelaySeconds: 5
-          periodSeconds: 2              
+          initialDelaySeconds: 40
+          periodSeconds: 2  
+          timeoutSeconds: 2
+          failureThreshold: 1            
         resources: {}
         volumeMounts:
         - mountPath: /data/taskmanager
           name: taskmanager-pv
+        - mountPath: /data/config
+          name: taskmanager-config-vol   
+        - mountPath: /data/secret
+          name: taskmanager-secret-vol   
+
       restartPolicy: Always
-      serviceAccountName: ""
+    
       volumes:
       - name: taskmanager-pv
         persistentVolumeClaim:
           claimName: taskmanager-pvc
+
+      - name: taskmanager-config-vol
+        configMap:
+          name: taskmanager-config-map
+
+      - name: taskmanager-secret-vol
+        secret:
+          secretName: taskmanager-secret
+
 status: {}
